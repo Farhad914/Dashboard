@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #f5f5f0;
+      color: #1a1a1a;
+      min-height: 100vh;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+      color: #1a1a1a;
+    }
+
+    .metric-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-bottom: 1.5rem;
+    }
+
+    .metric {
+      background: #ebebе6;
+      background: #e8e8e3;
+      border-radius: 8px;
+      padding: 1rem;
+    }
+
+    .metric-label {
+      font-size: 13px;
+      color: #666;
+      margin-bottom: 4px;
+    }
+
+    .metric-val {
+      font-size: 24px;
+      font-weight: 500;
+    }
+
+    .metric-val.green { color: #1D9E75; }
+
+    .card {
+      background: #ffffff;
+      border: 0.5px solid rgba(0,0,0,0.12);
+      border-radius: 12px;
+      padding: 1rem 1.25rem;
+    }
+
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+
+    .card-title {
+      font-size: 15px;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 1rem;
+    }
+
+    input[type="text"] {
+      flex: 1;
+      height: 36px;
+      padding: 0 12px;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: #fff;
+      color: #1a1a1a;
+      outline: none;
+    }
+
+    input[type="text"]:focus {
+      border-color: rgba(0,0,0,0.4);
+      box-shadow: 0 0 0 3px rgba(0,0,0,0.06);
+    }
+
+    button {
+      height: 36px;
+      padding: 0 14px;
+      border: 0.5px solid rgba(0,0,0,0.2);
+      border-radius: 8px;
+      font-size: 14px;
+      font-family: inherit;
+      background: transparent;
+      color: #1a1a1a;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    button:hover { background: #f0f0eb; }
+    button:active { transform: scale(0.98); }
+
+    .filter-row { display: flex; gap: 6px; }
+
+    .filter-btn {
+      font-size: 12px;
+      height: 28px;
+      padding: 0 10px;
+      border-radius: 99px;
+    }
+
+    .filter-btn.active {
+      background: #e8e8e3;
+      border-color: rgba(0,0,0,0.3);
+    }
+
+    .task-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 0.5px solid rgba(0,0,0,0.1);
+      border-radius: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .task-item.done { opacity: 0.45; }
+    .task-item.done .task-text { text-decoration: line-through; }
+
+    .task-check {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 1.5px solid rgba(0,0,0,0.25);
+      background: transparent;
+      cursor: pointer;
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .task-check.checked {
+      background: #1D9E75;
+      border-color: #1D9E75;
+    }
+
+    .task-check i { font-size: 11px; color: #fff; }
+
+    .task-text {
+      flex: 1;
+      font-size: 14px;
+      color: #1a1a1a;
+    }
+
+    .task-del {
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #aaa;
+      font-size: 16px;
+      padding: 2px;
+      height: auto;
+    }
+
+    .task-del:hover { color: #E24B4A; background: none; }
+
+    .progress-bar-wrap {
+      height: 6px;
+      background: #e8e8e3;
+      border-radius: 99px;
+      overflow: hidden;
+      margin-top: 1rem;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background: #1D9E75;
+      border-radius: 99px;
+      transition: width 0.3s;
+    }
+
+    .empty {
+      text-align: center;
+      font-size: 14px;
+      color: #aaa;
+      padding: 1.5rem 0;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      body { background: #1a1a1a; color: #e8e8e3; }
+      .metric { background: #2a2a2a; }
+      .metric-label { color: #999; }
+      .card { background: #222; border-color: rgba(255,255,255,0.1); }
+      input[type="text"] { background: #2a2a2a; color: #e8e8e3; border-color: rgba(255,255,255,0.15); }
+      button { color: #e8e8e3; border-color: rgba(255,255,255,0.15); }
+      button:hover { background: #2a2a2a; }
+      .filter-btn.active { background: #333; }
+      .task-item { border-color: rgba(255,255,255,0.08); }
+      .task-check { border-color: rgba(255,255,255,0.3); }
+      .task-text { color: #e8e8e3; }
+      .progress-bar-wrap { background: #2a2a2a; }
+      h1 { color: #e8e8e3; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>My Dashboard</h1>
+
+    <div class="metric-row">
+      <div class="metric">
+        <div class="metric-label">Total</div>
+        <div class="metric-val" id="m-total">0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Done</div>
+        <div class="metric-val green" id="m-done">0</div>
+      </div>
+      <div class="metric">
+        <div class="metric-label">Remaining</div>
+        <div class="metric-val" id="m-rem">0</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <i class="ti ti-checklist" aria-hidden="true"></i>
+          My tasks
+        </div>
+        <div class="filter-row">
+          <button class="filter-btn active" onclick="setFilter('all', this)">All</button>
+          <button class="filter-btn" onclick="setFilter('active', this)">Active</button>
+          <button class="filter-btn" onclick="setFilter('done', this)">Done</button>
+        </div>
+      </div>
+
+      <div class="input-row">
+        <input type="text" id="task-input" placeholder="Add a new task..." onkeydown="if(event.key==='Enter') addTask()" />
+        <button onclick="addTask()">
+          <i class="ti ti-plus" aria-hidden="true"></i> Add
+        </button>
+      </div>
+
+      <div class="task-list" id="task-list"></div>
+
+      <div class="progress-bar-wrap">
+        <div class="progress-bar" id="progress-bar" style="width:0%"></div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let tasks = [
+      { id: 1, text: 'Review CBR article draft', done: false },
+      { id: 2, text: 'Study contractor quoting workflow', done: false },
+      { id: 3, text: 'Email Professor Xie', done: true },
+    ];
+    let nextId = 4;
+    let filter = 'all';
+
+    function setFilter(f, el) {
+      filter = f;
+      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+      el.classList.add('active');
+      render();
+    }
+
+    function addTask() {
+      const input = document.getElementById('task-input');
+      const text = input.value.trim();
+      if (!text) return;
+      tasks.push({ id: nextId++, text, done: false });
+      input.value = '';
+      render();
+    }
+
+    function toggleTask(id) {
+      const t = tasks.find(t => t.id === id);
+      if (t) t.done = !t.done;
+      render();
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(t => t.id !== id);
+      render();
+    }
+
+    function render() {
+      const total = tasks.length;
+      const done = tasks.filter(t => t.done).length;
+      const rem = total - done;
+      document.getElementById('m-total').textContent = total;
+      document.getElementById('m-done').textContent = done;
+      document.getElementById('m-rem').textContent = rem;
+      const pct = total === 0 ? 0 : Math.round((done / total) * 100);
+      document.getElementById('progress-bar').style.width = pct + '%';
+
+      const visible = tasks.filter(t =>
+        filter === 'all' ? true : filter === 'done' ? t.done : !t.done
+      );
+
+      const list = document.getElementById('task-list');
+      if (visible.length === 0) {
+        list.innerHTML = '<div class="empty">No tasks here.</div>';
+        return;
+      }
+      list.innerHTML = visible.map(t => `
+        <div class="task-item ${t.done ? 'done' : ''}">
+          <div class="task-check ${t.done ? 'checked' : ''}" onclick="toggleTask(${t.id})" role="checkbox" aria-checked="${t.done}" aria-label="Mark complete">
+            ${t.done ? '<i class="ti ti-check" aria-hidden="true"></i>' : ''}
+          </div>
+          <span class="task-text">${t.text}</span>
+          <button class="task-del" onclick="deleteTask(${t.id})" aria-label="Delete task">
+            <i class="ti ti-trash" aria-hidden="true"></i>
+          </button>
+        </div>
+      `).join('');
+    }
+
+    render();
+  </script>
+</body>
+</html>
